@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-    instance := go_databases.GetMongoConnector(go_databases.MONGO_CONNECTOR)
+    instance := go_databases.GetMongoConnector()
     err := instance.Connect(mongoString, mongoDbName)
     assert.Equal(t, err, nil)
     user := &user{
