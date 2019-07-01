@@ -1,36 +1,11 @@
-# Databases Golang
-[![codecov](https://codecov.io/gh/PxyUp/go-databases/branch/master/graph/badge.svg)](https://codecov.io/gh/PxyUp/go-databases)
+package go_databases
 
-This repository will have connectors for most popular databases
-
-# How to use
-
-All instance it is singleton, you can multiple use them in another file, without any worries about connections counts
-
-```bash
-go get github.com/PxyUp/go-databases
-```
-
-```go
 import (
-	"github.com/PxyUp/go-databases"
+	"github.com/PxyUp/go-databases/mongo"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 )
 
-func main() {
-    instance := go_databases.GetMongoConnector(go_databases.MONGO_CONNECTOR)
-    err := instance.Connect(mongoString, mongoDbName)
-    assert.Equal(t, err, nil)
-    user := &user{
-        "Test",
-    }
-    err = instance.InsertOne(collection, user)
-    assert.Equal(t, err, nil)
-}
-```
-
-# Mongo
-
-```bash
 type MongoDbConnector interface {
 	Connect(mongoUrl string, databaseName string) error
 	Disconnect()
@@ -42,4 +17,13 @@ type MongoDbConnector interface {
 	GetOneProject(collectionName string, findPredicate bson.M, projectFields bson.M, structToDeserialize interface{}) error
 	GetAllProject(collectionName string, findPredicate bson.M, projectFields bson.M, structToDeserialize interface{}) error
 }
-```
+
+type CreateMongoConnector MongoDbConnector
+
+const (
+	MONGO_CONNECTOR = "MONGO_CONNECTOR"
+)
+
+func GetMongoConnector() CreateMongoConnector {
+	return mongo.GetInstance()
+}
