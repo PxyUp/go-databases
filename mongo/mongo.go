@@ -19,6 +19,15 @@ type MongoConnector struct {
 	session *MgoSession
 }
 
+type MongoIterator struct {
+	*mgo.Iter
+	*mgo.Session
+}
+
+type MongoOptions struct {
+	Projection *bson.M
+}
+
 type MgoSession struct {
 	session      *mgo.Session
 	isConnected  bool
@@ -129,4 +138,25 @@ func (c *MongoConnector) UpdateOne(collectionName string, findPredicate bson.M, 
 func (c *MongoConnector) Disconnect() {
 	c.session.session.Close()
 	c.session.isConnected = false
+}
+
+func (c *MongoConnector) GetIterator(collectionName string, findPredicate bson.M, opts *MongoOptions) *MongoIterator {
+	sessionCopy := c.session.session.Copy()
+	collection := sessionCopy.DB(c.session.dataBaseName).C(collectionName)
+	query := collection.Find(findPredicate)
+	if opts != nil {
+		if opts.Projection != nil {
+			query = query.Select(*opts.Projection)
+		}
+	}
+	return &MongoIterator{query.Iter(), sessionCopy}
+}
+
+func (iter *MongoIterator) Close() error {
+	err := iter.Iter.Close()
+	if err != nil {
+		return err
+	}
+	iter.Session.Close()
+	return nil
 }

@@ -16,6 +16,7 @@ type MongoDbConnector interface {
 	GetAll(collectionName string, findPredicate bson.M, structToDeserialize interface{}) error
 	GetOneProject(collectionName string, findPredicate bson.M, projectFields bson.M, structToDeserialize interface{}) error
 	GetAllProject(collectionName string, findPredicate bson.M, projectFields bson.M, structToDeserialize interface{}) error
+	GetIterator(collectionName string, findPredicate bson.M, opts *mongo.MongoOptions) *mongo.MongoIterator
 }
 
 type CreateMongoConnector MongoDbConnector
