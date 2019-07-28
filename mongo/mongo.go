@@ -140,6 +140,13 @@ func (c *MongoConnector) Disconnect() {
 	c.session.isConnected = false
 }
 
+func (c *MongoConnector) Count(collectionName string, findPredicate bson.M) (int, error) {
+	sessionCopy := c.session.session.Copy()
+	defer sessionCopy.Close()
+	collection := sessionCopy.DB(c.session.dataBaseName).C(collectionName)
+	return collection.Find(findPredicate).Count()
+}
+
 func (c *MongoConnector) GetIterator(collectionName string, findPredicate bson.M, opts *MongoOptions) *MongoIterator {
 	sessionCopy := c.session.session.Copy()
 	collection := sessionCopy.DB(c.session.dataBaseName).C(collectionName)

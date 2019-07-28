@@ -9,6 +9,7 @@ import (
 type MongoDbConnector interface {
 	Connect(mongoUrl string, databaseName string) error
 	Disconnect()
+	Count(collectionName string, findPredicate bson.M) (int, error)
 	InsertOne(collectionName string, entity interface{}) error
 	UpdateOne(collectionName string, findPredicate bson.M, updatePredicate bson.M) error
 	UpdateAll(collectionName string, findPredicate bson.M, updatePredicate bson.M) (*mgo.ChangeInfo, error)
