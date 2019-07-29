@@ -174,10 +174,10 @@ func (c *MongoConnector) GetIterator(collectionName string, findPredicate bson.M
 }
 
 func (iter *MongoIterator) Close() error {
+	iter.Session.Close()
 	err := iter.Iter.Close()
 	if err != nil {
 		return err
 	}
-	iter.Session.Close()
 	return nil
 }
