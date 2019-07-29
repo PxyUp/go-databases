@@ -11,6 +11,8 @@ type MongoDbConnector interface {
 	Disconnect()
 	Count(collectionName string, findPredicate bson.M) (int, error)
 	InsertOne(collectionName string, entity interface{}) error
+	Remove(collectionName string, findPredicate bson.M) error
+	RemoveAll(collectionName string, findPredicate bson.M) (*mgo.ChangeInfo, error)
 	UpdateOne(collectionName string, findPredicate bson.M, updatePredicate bson.M) error
 	UpdateAll(collectionName string, findPredicate bson.M, updatePredicate bson.M) (*mgo.ChangeInfo, error)
 	GetOne(collectionName string, findPredicate bson.M, structToDeserialize interface{}) error

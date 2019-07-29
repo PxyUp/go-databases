@@ -135,6 +135,20 @@ func (c *MongoConnector) UpdateOne(collectionName string, findPredicate bson.M, 
 	return err
 }
 
+func (c *MongoConnector) Remove(collectionName string, findPredicate bson.M) error {
+	sessionCopy := c.session.session.Copy()
+	defer sessionCopy.Close()
+	collection := sessionCopy.DB(c.session.dataBaseName).C(collectionName)
+	return collection.Remove(findPredicate)
+}
+
+func (c *MongoConnector) RemoveAll(collectionName string, findPredicate bson.M)  (*mgo.ChangeInfo, error) {
+	sessionCopy := c.session.session.Copy()
+	defer sessionCopy.Close()
+	collection := sessionCopy.DB(c.session.dataBaseName).C(collectionName)
+	return collection.RemoveAll(findPredicate)
+}
+
 func (c *MongoConnector) Disconnect() {
 	c.session.session.Close()
 	c.session.isConnected = false
